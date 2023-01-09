@@ -4,7 +4,7 @@ Heart Attack Analysis & Prediction(심장마비 분석, 예측)
 
 데이터 : https://www.kaggle.com/datasets/rashikrahmanpritom/heart-attack-analysis-prediction-dataset
 
-### 1. Data Description
+### 1. 데이터 설명
 ---
 
 - Age : 환자의 나이
@@ -35,7 +35,7 @@ Heart Attack Analysis & Prediction(심장마비 분석, 예측)
   - ST depression : 심전도 결과에서 ST 세그먼트를 나타내는 용어
 - oldpeak : 최대 운동 St segment의 기울기
 
-### 2. Library import
+### 2. 라이브러리 추가
 ``` python
 import numpy as np # 행렬, 다차원 배열을 다룰 때 사용
 import pandas as pd # 데이터를 다룰 때 사용
@@ -46,5 +46,34 @@ import plotly.graph_objs as go
 import plotly.express as px
 plt.style.use('seaborn-dark')
 plt.style.context('grayscale')
+
+from google.colab import drive
+drive.mount('/content/Kaggle_Heart_Attack_data')
 ```
-    
+
+
+### 3. 데이터 불러오기
+``` python
+# data download : https://www.kaggle.com/datasets/rashikrahmanpritom/heart-attack-analysis-prediction-dataset?resource=download
+
+data = pd.read_csv("/content/Kaggle_Heart_Attack_data/MyDrive/Kaggle_Heart_Attack_data/heart.csv")
+data.head()
+```
+
+|   |age|sex|cp|trtbps|chol|fbs|restecg|thalachh|exng|oldpeak|slp|caa|thall|output|
+|-----|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|0|63|1|3|145|233|1|0|150|0|2.3|0|0|1|1|
+|1|37|1|2|130|250|0|1|187|0|3.5|0|0|2|1|
+|2|41|0|1|130|204|0|0|172|0|1.4|2|0|2|1|
+|3|56|1|1|120|236|0|1|178|0|0.8|2|0|2|1|
+|4|57|0|0|120|354|0|1|163|1|0.6|2|0|2|1|
+
+``` python
+display(data.describe())
+display(data.info())
+```
+![image](https://user-images.githubusercontent.com/121947465/211258105-29443719-9c7d-4575-831d-8a498a8b6c7c.png)
+
+![image](https://user-images.githubusercontent.com/121947465/211258133-92a8936d-66c1-43b3-837e-c9e4b1c2ebf0.png)
+
+
