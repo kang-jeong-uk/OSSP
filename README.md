@@ -22,7 +22,7 @@ Heart Attack Analysis & Prediction(심장마비 분석, 예측)
 - chol : 혈중 콜레스테롤(mg/dl)
 - fbs : 공복 혈당(혈당 > 120mg/dl == true : 1, false : 0)
 - rest_ecg : 심전도
-  - 0 : 정상
+  - 0 : 정상 
   - 1 : ST-T파 이상(T파 역전 및/또는 > 0.05mV의 ST 상승 또는 하강)
   - 2 : Estes의 기준에 따라 가능성이 있거나 확실한 좌심실 비대
 - thalach : 최대 심박수
@@ -31,16 +31,17 @@ Heart Attack Analysis & Prediction(심장마비 분석, 예측)
   - 1 : 심장마비 가능성 높음
   
   
-- slp : 비교적 안정되기까지 운동으로 유발되는 ST depression
+- slp : 비교적 안정되기까지 운동으로 유발되는 ST 우울증
+  - ST depression : 심전도 결과에서 ST 세그먼트를 나타내는 용어
 - oldpeak : 최대 운동 St segment의 기울기
 
 ### 2. Library import
 ``` python
-import numpy as np # linear algebra
-import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
-import seaborn as sns 
+import numpy as np # 행렬, 다차원 배열을 다룰 때 사용
+import pandas as pd # 데이터를 다룰 때 사용
+import seaborn as sns # matlab을 기반으로 한 시각화
 import matplotlib.pyplot as plt
-import missingno as msno
+import missingno as msno # 결측값을 확인할 때 사용
 import plotly.graph_objs as go
 import plotly.express as px
 plt.style.use('seaborn-dark')
