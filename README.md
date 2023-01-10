@@ -39,7 +39,6 @@ import numpy as np # 행렬, 다차원 배열을 다룰 때 사용
 import pandas as pd # 데이터를 다룰 때 사용
 import seaborn as sns #matlab을 기반으로 한 시각화
 import matplotlib.pyplot as plt
-import missingno as msno # 결측값을 확인할 때 사용
 import plotly.graph_objs as go
 import plotly.express as px
 plt.style.use('fivethirtyeight')
