@@ -112,5 +112,7 @@ print("Male Value Counts: \n{}".format((data[data ["sex"] == 0].reset_index())['
 ![image](https://user-images.githubusercontent.com/121947465/211488720-fbe2c6e2-a2a4-44b0-9287-daad5c73cdc0.png)
 
 데이터가 '0'인 성별은 전체 데이터 비율이 1보다 낮고, output의 비율은 1(심장질환을 경험할 확률이 높은 사람)이 더 높게 나타납니다.
+
 데이터가 '1'인 성별은 전체 데이터 비율이 0보다 높고, ouput의 비율은 0(심장질환을 경험할 확률이 낮은 사람)이 더 높게 나타납니다.
+
 -> 성별 데이터 '0'이 여자, '1'이 남자인 것을 유추할 수 있습니다.
