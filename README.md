@@ -7,6 +7,10 @@ Heart Attack Analysis & Prediction(심장마비 분석, 예측)
 참고한 오픈소스 : https://www.kaggle.com/code/advikmaniar/heart-attack-eda-prediction-with-9-model-95/notebook
 
 (License : This Notebook has been released under the Apache 2.0 open source license.)
+
+
+
+
 ### 1. 데이터 설명
 ---
 입력 데이터에 대한 설명입니다.
@@ -40,7 +44,10 @@ Heart Attack Analysis & Prediction(심장마비 분석, 예측)
 
 - 연속형 데이터(Classification data) : age, trtbps, chol, thalach, oldpeak
 - 분류형 데이터(Categorized data) : sex, output, cp, fbs, exng, restecg, thall, caa, slp
-- 
+
+
+
+
 ### 2. 라이브러리 추가
 ``` python
 import numpy as np # 행렬, 다차원 배열을 다룰 때 사용
@@ -55,6 +62,8 @@ plt.style.use('seaborn-dark')
 from google.colab import drive
 drive.mount('/content/Kaggle_Heart_Attack_data')
 ```
+
+
 
 
 ### 3. 데이터 불러오기
@@ -80,6 +89,8 @@ display(data.info())
 ![image](https://user-images.githubusercontent.com/121947465/211258105-29443719-9c7d-4575-831d-8a498a8b6c7c.png)
 
 ![image](https://user-images.githubusercontent.com/121947465/211258133-92a8936d-66c1-43b3-837e-c9e4b1c2ebf0.png)
+
+
 
 
 ### 4. 데이터 분석
@@ -187,3 +198,142 @@ print("표준편차: {}".format(round((LR["age"].std()),3)))
 X축 : 나이, Y축 : 혈압
 
 ![image](https://user-images.githubusercontent.com/121947465/212070351-831f202a-bf09-4b77-86ce-7e895953d2df.png)
+
+``` python
+# 분류형, 연속형 데이터 나누기
+class_cols=["sex","output",'cp',"fbs","exng","restecg","thall","caa","slp"]
+class_data=data[class_cols]
+
+continuous_cols=["age","trtbps","chol","thalachh","oldpeak"]
+continuous_data=data[continuous_cols]
+
+
+# 분류형 데이터 그래프
+for col in class_cols[2:]:
+    ax=px.pie(data, names= col, title=col)
+    ax.show()
+
+
+# 연속형 데이터 그래프
+continuous = ["age","trtbps","chol","thalachh","oldpeak", "output"]
+fig, ax1 = plt.subplots(2,3, figsize=(20,20))
+k = 0
+for i in range(2):
+  for j in range(3):
+    sns.distplot(data[continuous[k]], ax = ax1[i][j], color = 'red')
+    k +=1
+
+plt.show()
+```
+![image](https://user-images.githubusercontent.com/121947465/212470131-70a96ab7-fbd8-43d8-a191-0a4a5f3fe90a.png)
+![image](https://user-images.githubusercontent.com/121947465/212470135-f3c2fe41-50fc-46bb-b691-f7287189e202.png)
+![image](https://user-images.githubusercontent.com/121947465/212470137-5cc4ef40-f6b0-45da-8703-81d355d8ac7f.png)
+![image](https://user-images.githubusercontent.com/121947465/212470140-788fcf97-2c51-4f9b-ac5e-b155454911c1.png)
+![image](https://user-images.githubusercontent.com/121947465/212470143-4119ff78-1350-4514-bc3a-bc427b5c7862.png)
+![image](https://user-images.githubusercontent.com/121947465/212470145-82e9eb1d-a9e1-4e8e-922d-38ea58ff976c.png)
+![image](https://user-images.githubusercontent.com/121947465/212470150-b3ac9443-7dbb-4bfb-9a84-5cfd5944cbf7.png)
+
+
+![image](https://user-images.githubusercontent.com/121947465/212469953-290728cc-287a-4c05-867e-bf2f43dec3fb.png)
+![image](https://user-images.githubusercontent.com/121947465/212469963-72154d23-08df-4a50-a907-1051ef041c60.png)
+
+
+
+
+### 5. 데이터 전처리
+###### - 결측치는 데이터셋에 존재하지 않으므로 고려하지 않습니다.
+- 이상치 탐색
+
+``` python
+fig, ax1 = plt.subplots(2,2, figsize=(20,12))
+k = 0
+for i in range(2):
+    for j in range(2):
+        sns.boxplot(data=data,x=data[continuous_cols[1:][k]],saturation=1,ax=ax1[i][j],color="white")
+        k+=1
+plt.tight_layout()
+plt.show()
+
+# 이상치 탐색
+'''
+# 이상치 판별, 시각화
+
+Q3 = data["trtbps"].quantile(q=0.75)
+Q1 = data["trtbps"].quantile(q=0.25)
+IQR = Q3 - Q1
+
+print("이상치(최댓값 초과) : ",Q3 + IQR*1.5)
+print("이상치(최솟값 미만) : ", Q1 - IQR*1.5)
+'''
+
+# Display the position of outliners.
+print("Outliners Present at position: \n")
+print("trtbps: {}".format(np.where(data['trtbps']>170)))
+print("chol: {}".format(np.where(data['chol']>369.75)))
+print("thalachh: {}".format(np.where(data['thalachh']<84.75)))
+print("oldpeak: {}".format(np.where(data['oldpeak']>4)))
+```
+
+![image](https://user-images.githubusercontent.com/121947465/212472826-1a82fc34-068d-490a-8aae-63d1e5932273.png)
+![image](https://user-images.githubusercontent.com/121947465/212473025-5849a46b-d50c-480b-aa99-fac8de4bb3b8.png)
+
+박스 도표를 통해 데이터의 전반적인 구성을 보고 이상치를 판별합니다.
+총 이상치는 19개입니다. (101번 데이터는 'trtbps', 'oldpeak' 두 곳에서 중첩되므로 한번만 카운트)
+
+###### * 참고 사이트 코드에 나와있는 이상치의 범위를 정확하게 수정하였습니다. 
+###### * 이로 인해 'trtbps'데이터의 이상치 개수가 13개에서 9개로 변경되었습니다.
+
+
+``` python
+print("trtbps: {}".format(np.where(data1['trtbps'] > 165)))
+print("chol: {}".format(np.where(data1['chol'] > 360)))
+print("thalachh: {}".format(np.where(data1['thalachh'] < 80)))
+print("oldpeak: {}".format(np.where(data1['oldpeak'] > 4)))
+```
+
+- 이상치 제거
+
+``` python
+# 이상치 제거
+
+import copy
+
+continuous_cols=["age","trtbps","chol","thalachh","oldpeak"]
+continuous_data=data[continuous_cols]
+Outliner_delete_data = copy.deepcopy(data)
+
+a=1
+for a in range(1, 5):
+  Q3 = data[continuous_cols[a]].quantile(q=0.75)
+  Q1 = data[continuous_cols[a]].quantile(q=0.25)
+  IQR = Q3 - Q1
+  outliner_max = data[continuous_cols[a]] > Q3 + IQR*1.5  # 이상치(최댓값 초과)
+  outliner_min = data[continuous_cols[a]] < Q1 - IQR*1.5  # 이상치(최솟값 미만)
+  outliner_max_index = data[outliner_max].index  # 인덱스
+  outliner_min_index = data[outliner_min].index  # 인덱스
+  
+  print(outliner_max_index)
+  print(outliner_min_index)
+  #print("----------------------------------------------")
+  
+
+  Outliner_delete_data.drop(outliner_max_index, inplace=True, errors='ignore')
+  Outliner_delete_data.drop(outliner_min_index, inplace=True, errors='ignore')
+
+
+fig, ax1 = plt.subplots(2,2, figsize=(20,12))
+k = 0
+for i in range(2):
+    for j in range(2):
+        sns.boxplot(data=Outliner_delete_data,x=Outliner_delete_data[continuous_cols[1:][k]],saturation=1,ax=ax1[i][j],color="white")
+        k+=1
+plt.tight_layout()
+plt.show()
+
+display(Outliner_delete_data.info())
+```
+
+![image](https://user-images.githubusercontent.com/121947465/212476631-96ca56b4-4215-455b-8028-2b3a4cbf5548.png)
+![image](https://user-images.githubusercontent.com/121947465/212474582-de320939-7c33-438c-b084-dd237f17e744.png)
+![image](https://user-images.githubusercontent.com/121947465/212476635-446869da-2395-4087-a192-efa4234fdb8f.png)
+303개의 데이터 중 이상치 19개가 제거되었습니다.
