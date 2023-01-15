@@ -333,7 +333,68 @@ plt.show()
 display(Outliner_delete_data.info())
 ```
 
+결측치를 제거한 데이터셋의 박스도표
+    
+    
+
 ![image](https://user-images.githubusercontent.com/121947465/212476631-96ca56b4-4215-455b-8028-2b3a4cbf5548.png)
 ![image](https://user-images.githubusercontent.com/121947465/212474582-de320939-7c33-438c-b084-dd237f17e744.png)
 ![image](https://user-images.githubusercontent.com/121947465/212476635-446869da-2395-4087-a192-efa4234fdb8f.png)
+
 303개의 데이터 중 이상치 19개가 제거되었습니다.
+
+
+##### - 학습, 평가용 데이터 분류 / 정규화
+
+``` python
+# 데이터 분할
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+
+X = Outliner_delete_data.iloc[:,:13]
+Y = Outliner_delete_data["output"]
+
+X_train,X_test,Y_train,Y_test = train_test_split(X,Y,test_size=0.2, random_state = 1)
+
+MM_scaler = MinMaxScaler()
+X_train = MM_scaler.fit_transform(X_train)
+X_test = MM_scaler.fit_transform(X_test)
+```
+
+
+
+``` python
+from sklearn.metrics import precision_recall_fscore_support as score
+from sklearn.metrics import confusion_matrix,accuracy_score
+from sklearn.metrics import mean_squared_error,r2_score
+from sklearn.model_selection import GridSearchCV
+
+- 예측 결과와 정확도 시각화 함수
+def compute(Y_pred,Y_test):
+    # output을 잘 예측했는지 시각화
+    
+    plt.figure(figsize=(12,6))
+    plt.scatter(range(len(Y_pred)),Y_pred,color="yellow",lw=5,label="Predictions")
+    plt.scatter(range(len(Y_test)),Y_test,color="red",label="Actual")
+    plt.title("Prediction Values vs Real Values")
+    plt.legend()
+    plt.show()
+
+
+    cm=confusion_matrix(Y_test,Y_pred)
+    class_label = ["High-risk", "Low-risk"]
+    df_cm = pd.DataFrame(cm, index=class_label,columns=class_label)
+    sns.heatmap(df_cm,annot=True,cmap='Pastel1',linewidths=2,fmt='d')
+    plt.title("Confusion Matrix",fontsize=15)
+    plt.xlabel("Predicted")
+    plt.ylabel("True")
+    plt.show()
+
+    # 정확도 계산
+    acc=accuracy_score(Y_test,Y_pred)
+    mse=mean_squared_error(Y_test,Y_pred)
+    precision, recall, fscore, train_support = score(Y_test, Y_pred, pos_label=1, average='binary')
+    print('Precision: {} \nRecall: {} \nF1-Score: {} \nAccuracy: {} %\nMean Square Error: {}'.format(
+        round(precision, 3), round(recall, 3), round(fscore,3), round((acc*100),3), round((mse),3)))
+ ```
