@@ -293,8 +293,12 @@ print("oldpeak: {}".format(np.where(data1['oldpeak'] > 4)))
 
 - 이상치 제거
 
+참고 사이트는 이상치 제거를 '로그 변환'을 통해 수행했습니다. 로그 변환으로 이상치를 제거할 경우 이상치가 완전히 제거되진 않습니다.
+
+저는 IQR 방법을 사용하여 이상치를 완전히 제거하여 두 방법을 비교해보도록 하겠습니다.
+
 ``` python
-# 이상치 제거
+# 이상치 제거(IQR)
 
 import copy
 
@@ -343,11 +347,36 @@ display(Outliner_delete_data.info())
 
 303개의 데이터 중 이상치 19개가 제거되었습니다.
 
+``` python
+# 이상치 제거(로그 변환)
+data["age"]= np.log(data.age)
+data["trtbps"]= np.log(data.trtbps)
+data["chol"]= np.log(data.chol)
+data["thalachh"]= np.log(data.thalachh)
+print("---Log Transform performed---")
+
+continuous_cols=["age","trtbps","chol","thalachh","oldpeak"]
+continuous_data=data[continuous_cols]
+
+for k, v in continuous_data.items():
+        q1 = v.quantile(0.25)
+        q3 = v.quantile(0.75)
+        irq = q3 - q1
+        v_col = v[(v <= q1 - 1.5 * irq) | (v >= q3 + 1.5 * irq)]
+        perc = np.shape(v_col)[0] * 100.0 / np.shape(data)[0]
+        print("Column {} outliers = {} => {}%".format(k,len(v_col),round((perc),3)))
+```
+![image](https://user-images.githubusercontent.com/121947465/212544139-af4423ec-c166-42d7-96c1-fea89247e13e.png)
+
+
+이상치가 완전히는 제거되지 않는  
+
 
 ##### - 학습, 평가용 데이터 분류 / 정규화
+  
 
 ``` python
-# 데이터 분할
+# 데이터 분할(IQR)
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
@@ -362,18 +391,23 @@ X_train = MM_scaler.fit_transform(X_train)
 X_test = MM_scaler.fit_transform(X_test)
 ```
 
+``` python
+# 데이터 분할(로그변환)
+
+```
 
 
+##### - 예측 결과와 정확도 시각화 함수
+  
 ``` python
 from sklearn.metrics import precision_recall_fscore_support as score
 from sklearn.metrics import confusion_matrix,accuracy_score
 from sklearn.metrics import mean_squared_error,r2_score
 from sklearn.model_selection import GridSearchCV
 
-- 예측 결과와 정확도 시각화 함수
+
 def compute(Y_pred,Y_test):
-    # output을 잘 예측했는지 시각화
-    
+    # 각각의 output을 잘 예측했는지 시각화
     plt.figure(figsize=(12,6))
     plt.scatter(range(len(Y_pred)),Y_pred,color="yellow",lw=5,label="Predictions")
     plt.scatter(range(len(Y_test)),Y_test,color="red",label="Actual")
@@ -381,7 +415,7 @@ def compute(Y_pred,Y_test):
     plt.legend()
     plt.show()
 
-
+    # 혼동 행렬을 통한 예측 정확도 시각화
     cm=confusion_matrix(Y_test,Y_pred)
     class_label = ["High-risk", "Low-risk"]
     df_cm = pd.DataFrame(cm, index=class_label,columns=class_label)
@@ -398,3 +432,32 @@ def compute(Y_pred,Y_test):
     print('Precision: {} \nRecall: {} \nF1-Score: {} \nAccuracy: {} %\nMean Square Error: {}'.format(
         round(precision, 3), round(recall, 3), round(fscore,3), round((acc*100),3), round((mse),3)))
  ```
+
+
+### 6. 예측
+##### 6-1. 로지스틱 회귀
+``` python
+#Build Model(Logistic Regression)
+from sklearn.linear_model import LogisticRegression
+import time
+start = time.time()
+
+model_Log= LogisticRegression(random_state=10)
+model_Log.fit(X_train,Y_train)
+Y_pred= model_Log.predict(X_test)
+
+end=time.time()
+
+model_Log_time=end-start
+model_Log_accuracy=round(accuracy_score(Y_test,Y_pred), 4)*100 # Accuracy
+
+print(f"Execution time of model: {round((model_Log_time),5)} seconds\n")
+#Plot and compute metrics
+compute(Y_pred,Y_test)
+```
+- 예측 정확도 : 82.456%(IQR)
+![image](https://user-images.githubusercontent.com/121947465/212545044-d390680b-5c70-4a3a-a921-8c7c0c984239.png)
+
+- 예측 정확도 : 90.164%(로그변환)
+![image](https://user-images.githubusercontent.com/121947465/212544973-b6ce8c4f-021c-4f0a-94c2-289bc0537788.png)
+
