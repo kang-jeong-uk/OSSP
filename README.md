@@ -437,7 +437,7 @@ def compute(Y_pred,Y_test):
 ### 6. 예측
 ##### 6-1. 로지스틱 회귀
 ``` python
-#Build Model(Logistic Regression)
+# 1. Build Model(Logistic Regression)
 from sklearn.linear_model import LogisticRegression
 import time
 start = time.time()
@@ -460,4 +460,167 @@ compute(Y_pred,Y_test)
 
 - 예측 정확도 : 90.164%(로그변환)
 ![image](https://user-images.githubusercontent.com/121947465/212544973-b6ce8c4f-021c-4f0a-94c2-289bc0537788.png)
+
+
+##### 6-2. K-최근접 이웃
+``` python
+# 2. Build Model(K-Nearest Neighbours)
+from sklearn.neighbors import KNeighborsClassifier
+start=time.time()
+
+model_KNN = KNeighborsClassifier(n_neighbors=15)
+model_KNN.fit(X_train,Y_train)
+Y_pred = model_KNN.predict(X_test)
+
+end=time.time()
+
+model_KNN_time = end-start
+model_KNN_accuracy=round(accuracy_score(Y_test,Y_pred), 4)*100 # Accuracy
+
+print(f"Execution time of model: {round((model_KNN_time),5)} seconds")
+#Plot and compute metric
+compute(Y_pred,Y_test)
+```
+- 예측 정확도 : 88.525(로그변환)
+![image](https://user-images.githubusercontent.com/121947465/212681111-59a0ad6a-eb97-42fa-8f11-ec736a1bc5e0.png)
+
+##### 6-3. 서포트 벡터 머신
+``` python
+# 3. Build Model(Support Vector Machine)
+from sklearn.svm import SVC
+
+
+start=time.time()
+
+model_svm=SVC(kernel="rbf")
+model_svm.fit(X_train,Y_train)
+Y_pred=model_svm.predict(X_test)
+
+end=time.time()
+
+model_svm_time=end-start
+model_svm_accuracy=round(accuracy_score(Y_test,Y_pred), 4)*100 # Accuracy
+
+print(f"Execution time of model: {round((model_svm_time),5)} seconds")
+#Plot and compute metric
+compute(Y_pred,Y_test)
+```
+- 예측 정확도 : 90.164%(로그변환)
+![image](https://user-images.githubusercontent.com/121947465/212681740-8ecfcb6f-2968-49ae-b51f-c92ff21cbf2e.png)
+
+##### 6-4. 의사결정트리
+``` python
+from sklearn.tree import DecisionTreeClassifier
+# 4. Build Model(Decision Tree)
+start=time.time()
+
+model_tree=DecisionTreeClassifier(random_state=10,criterion="gini",max_depth=100)
+model_tree.fit(X_train,Y_train)
+Y_pred=model_tree.predict(X_test)
+
+end=time.time()
+
+model_tree_time=end-start
+model_tree_accuracy=round(accuracy_score(Y_test,Y_pred), 4)*100 # Accuracy
+
+print(f"Execution time of model: {round((model_tree_time),5)} seconds")
+#Plot and compute metric
+compute(Y_pred,Y_test)
+```
+- 예측 정확도 : 81.967%(로그변환)
+![image](https://user-images.githubusercontent.com/121947465/212681991-ffadc878-43f2-461e-8595-e832ef03c0d3.png)
+
+##### 6-5. 랜덤 포레스트 분류
+``` python
+from sklearn.ensemble import RandomForestClassifier
+# 5. Build Model(RandomForest)
+start=time.time()
+
+model_RF = RandomForestClassifier(n_estimators=300,criterion="gini",random_state=5,max_depth=100)
+model_RF.fit(X_train,Y_train)
+Y_pred=model_RF.predict(X_test)
+
+end=time.time()
+
+model_RF_time=end-start
+model_RF_accuracy=round(accuracy_score(Y_test,Y_pred), 4)*100 # Accuracy
+
+print(f"Execution time of model: {round((model_RF_time),5)} seconds")
+#Plot and compute metric
+compute(Y_pred,Y_test)
+```
+
+- 예측 정확도 : 91.803%(로그변환)
+![image](https://user-images.githubusercontent.com/121947465/212682468-52595c24-1927-4e5c-bc02-ed6a3347bb8e.png)
+
+##### 6-6. AdaBoost
+``` python
+from sklearn.ensemble import AdaBoostClassifier
+# 6. Build Model(AdaBoost)
+start=time.time()
+
+model_ADA=AdaBoostClassifier(learning_rate= 0.15,n_estimators= 25)
+model_ADA.fit(X_train,Y_train)
+Y_pred= model_ADA.predict(X_test)
+
+end=time.time()
+
+model_ADA_time=end-start
+model_ADA_accuracy=round(accuracy_score(Y_test,Y_pred), 4)*100 # Accuracy
+
+print(f"Execution time of model: {round((model_ADA_time),5)} seconds")
+#Plot and compute metric
+compute(Y_pred,Y_test)
+```
+- 예측 정확도 : 93.443%(로그변환)
+![image](https://user-images.githubusercontent.com/121947465/212682977-181567df-1403-461e-a7e8-dc2c1f866ec0.png)
+
+##### 6-7. Gradient Boosting
+``` python
+from sklearn.ensemble import GradientBoostingClassifier
+# 7. Build Model(Gradient Boosting)
+start=time.time()
+
+model_GB= GradientBoostingClassifier(random_state=10,n_estimators=20,learning_rate=0.29,loss="deviance")
+model_GB.fit(X_train,Y_train)
+Y_pred= model_GB.predict(X_test)
+
+end=time.time()
+
+model_GB_time=end-start
+model_GB_accuracy=round(accuracy_score(Y_test,Y_pred), 4)*100 # Accuracy
+
+print(f"Execution time of model: {round((model_GB_time),5)} seconds")
+#Plot and compute metric
+compute(Y_pred,Y_test)
+```
+- 예측 정확도 : 91.803%
+![image](https://user-images.githubusercontent.com/121947465/212683418-72556ff0-423d-42f9-a1d2-dee490b34b11.png)
+
+
+##### 6-8. XGBoost
+``` python
+from xgboost import XGBClassifier
+# 8. Build Model(XG Boost)
+start=time.time()
+
+model_xgb = XGBClassifier(objective='binary:logistic',learning_rate=0.1,
+                          max_depth=1,
+                          n_estimators = 50,
+                          colsample_bytree = 0.5)
+model_xgb.fit(X_train,Y_train)
+Y_pred = model_xgb.predict(X_test)
+
+end=time.time()
+
+model_xgb_time=end-start
+model_xgb_accuracy=round(accuracy_score(Y_test,Y_pred), 4)*100 # Accuracy
+
+print(f"Execution time of model: {round((model_xgb_time),5)} seconds")
+#Plot and compute metric
+compute(Y_pred,Y_test)
+```
+- 예측 정확도 : 95.082%(로그변환)
+![image](https://user-images.githubusercontent.com/121947465/212683649-3c929def-3def-43aa-a0b5-34545ce852a2.png)
+
 
