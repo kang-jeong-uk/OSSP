@@ -42,8 +42,8 @@ Heart Attack Analysis & Prediction(심장마비 분석, 예측)
   - 0 : 심장마비를 경험할 확률이 낮은 사람
 
 
-- 연속형 데이터(Classification data) : age, trtbps, chol, thalach, oldpeak
-- 분류형 데이터(Categorized data) : sex, output, cp, fbs, exng, restecg, thall, caa, slp
+- 연속형 데이터(Continuous data) : age, trtbps, chol, thalach, oldpeak
+- 분류형 데이터(Classification data) : sex, output, cp, fbs, exng, restecg, thall, caa, slp
 
 
 
@@ -242,6 +242,7 @@ plt.show()
 
 ### 5. 데이터 전처리
 ###### - 결측치는 데이터셋에 존재하지 않으므로 고려하지 않습니다.
+
 - 이상치 탐색
 
 ``` python
@@ -369,7 +370,17 @@ for k, v in continuous_data.items():
 ![image](https://user-images.githubusercontent.com/121947465/212544139-af4423ec-c166-42d7-96c1-fea89247e13e.png)
 
 
-이상치가 완전히는 제거되지 않는  
+이상치가 완전히는 제거되지 않는 모습입니다.
+
+###### - 이상치를 탐색하고 수정하는 것은 연속형 데이터에만 해당합니다. 분류형 데이터는 one-hot 인코딩 방식을 사용하여 Accuracy를 비교해 보겠습니다.
+``` python
+# one-hot encoding
+cat_col = ['sex','cp','fbs','restecg', 'exng', 'slp', 'caa', 'thall']
+data[cat_col] = data[cat_col].astype('category')
+data = pd.get_dummies(data, columns=cat_col, drop_first=True)
+display(data)
+```
+![image](https://user-images.githubusercontent.com/121947465/212817409-17220deb-b29f-4fb2-a5aa-4a8739dbc06f.png)
 
 
 ##### - 학습, 평가용 데이터 분류 / 정규화
@@ -392,11 +403,41 @@ X_test = MM_scaler.fit_transform(X_test)
 ```
 
 ``` python
-# 데이터 분할(로그변환)
+# 데이터 분할(로그 변환 데이터)
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+X=data.iloc[:,:13]
+Y=data["output"]
+
+X_train,X_test,Y_train,Y_test=train_test_split(X,Y,test_size=0.2,random_state=65) 
+
+#MinMax Scaling / Normalization of data
+MM_scaler = MinMaxScaler()
+X_train = MM_scaler.fit_transform(X_train)
+X_test = MM_scaler.fit_transform(X_test)
 
 ```
+``` python
+# 데이터 분할(one-hot encoding 데이터)
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+Y = data["output"]
+X = data.drop("output", axis=1)
+display(X)
 
+X_train,X_test,Y_train,Y_test=train_test_split(X,Y,test_size=0.2,random_state=65) 
 
+#MinMax Scaling / Normalization of data
+MM_scaler = MinMaxScaler()
+X_train = MM_scaler.fit_transform(X_train)
+X_test = MM_scaler.fit_transform(X_test)
+```
+![image](https://user-images.githubusercontent.com/121947465/212817681-9b8e4145-0f4e-40fc-ada2-7023db0f280a.png)
+  
+  
+  
+   
+   
 ##### - 예측 결과와 정확도 시각화 함수
   
 ``` python
@@ -481,6 +522,9 @@ print(f"Execution time of model: {round((model_KNN_time),5)} seconds")
 #Plot and compute metric
 compute(Y_pred,Y_test)
 ```
+- 예측 정확도 : 78.947%(IQR)
+![image](https://user-images.githubusercontent.com/121947465/212821327-6c484c3a-815b-4f33-8e82-e7ed493fcc73.png)
+
 - 예측 정확도 : 88.525(로그변환)
 ![image](https://user-images.githubusercontent.com/121947465/212681111-59a0ad6a-eb97-42fa-8f11-ec736a1bc5e0.png)
 
@@ -505,6 +549,9 @@ print(f"Execution time of model: {round((model_svm_time),5)} seconds")
 #Plot and compute metric
 compute(Y_pred,Y_test)
 ```
+- 예측 정확도 : 78.947%(IQR)
+![image](https://user-images.githubusercontent.com/121947465/212821483-159ec3ef-a323-4e08-8791-639f93c1ea72.png)
+
 - 예측 정확도 : 90.164%(로그변환)
 ![image](https://user-images.githubusercontent.com/121947465/212681740-8ecfcb6f-2968-49ae-b51f-c92ff21cbf2e.png)
 
@@ -527,6 +574,9 @@ print(f"Execution time of model: {round((model_tree_time),5)} seconds")
 #Plot and compute metric
 compute(Y_pred,Y_test)
 ```
+- 예측 정확도 : 73.684%(IQR)
+![image](https://user-images.githubusercontent.com/121947465/212821578-92cbdbe2-517c-435d-b0e7-96de9d580276.png)
+
 - 예측 정확도 : 81.967%(로그변환)
 ![image](https://user-images.githubusercontent.com/121947465/212681991-ffadc878-43f2-461e-8595-e832ef03c0d3.png)
 
@@ -549,6 +599,8 @@ print(f"Execution time of model: {round((model_RF_time),5)} seconds")
 #Plot and compute metric
 compute(Y_pred,Y_test)
 ```
+- 예측 정확도 : 77.193%(IQR)
+![image](https://user-images.githubusercontent.com/121947465/212821678-2c221b7d-c359-44af-8f0e-e0fec7f0a88b.png)
 
 - 예측 정확도 : 91.803%(로그변환)
 ![image](https://user-images.githubusercontent.com/121947465/212682468-52595c24-1927-4e5c-bc02-ed6a3347bb8e.png)
@@ -572,6 +624,9 @@ print(f"Execution time of model: {round((model_ADA_time),5)} seconds")
 #Plot and compute metric
 compute(Y_pred,Y_test)
 ```
+- 예측 정확도 : 80.702%(IQR)
+![image](https://user-images.githubusercontent.com/121947465/212821753-aed9f735-02e3-4c56-8e57-087e9756bf39.png)
+
 - 예측 정확도 : 93.443%(로그변환)
 ![image](https://user-images.githubusercontent.com/121947465/212682977-181567df-1403-461e-a7e8-dc2c1f866ec0.png)
 
@@ -594,6 +649,9 @@ print(f"Execution time of model: {round((model_GB_time),5)} seconds")
 #Plot and compute metric
 compute(Y_pred,Y_test)
 ```
+- 예측 정확도 : 77.193%(IQR)
+![image](https://user-images.githubusercontent.com/121947465/212821827-72b3c9f9-51e6-4895-ae4c-41dd8e53ef10.png)
+
 - 예측 정확도 : 91.803%
 ![image](https://user-images.githubusercontent.com/121947465/212683418-72556ff0-423d-42f9-a1d2-dee490b34b11.png)
 
@@ -620,6 +678,9 @@ print(f"Execution time of model: {round((model_xgb_time),5)} seconds")
 #Plot and compute metric
 compute(Y_pred,Y_test)
 ```
+- 예측 정확도 : 84.211%(IQR)
+![image](https://user-images.githubusercontent.com/121947465/212821922-5f557303-f52c-416f-a9b5-e3ae5ab03cc8.png)
+
 - 예측 정확도 : 95.082%(로그변환)
 ![image](https://user-images.githubusercontent.com/121947465/212683649-3c929def-3def-43aa-a0b5-34545ce852a2.png)
 
