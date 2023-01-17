@@ -497,9 +497,11 @@ print(f"Execution time of model: {round((model_Log_time),5)} seconds\n")
 compute(Y_pred,Y_test)
 ```
 - 예측 정확도 : 82.456%(IQR)
-![image](https://user-images.githubusercontent.com/121947465/212545044-d390680b-5c70-4a3a-a921-8c7c0c984239.png)
+
+![image](https://user-images.githubusercontent.com/121947465/212822939-0d645c73-0499-4ab0-8f50-c99a01d8ab83.png)
 
 - 예측 정확도 : 90.164%(로그변환)
+
 ![image](https://user-images.githubusercontent.com/121947465/212544973-b6ce8c4f-021c-4f0a-94c2-289bc0537788.png)
 
 
@@ -523,9 +525,11 @@ print(f"Execution time of model: {round((model_KNN_time),5)} seconds")
 compute(Y_pred,Y_test)
 ```
 - 예측 정확도 : 78.947%(IQR)
+
 ![image](https://user-images.githubusercontent.com/121947465/212821327-6c484c3a-815b-4f33-8e82-e7ed493fcc73.png)
 
 - 예측 정확도 : 88.525(로그변환)
+
 ![image](https://user-images.githubusercontent.com/121947465/212681111-59a0ad6a-eb97-42fa-8f11-ec736a1bc5e0.png)
 
 ##### 6-3. 서포트 벡터 머신
@@ -550,9 +554,11 @@ print(f"Execution time of model: {round((model_svm_time),5)} seconds")
 compute(Y_pred,Y_test)
 ```
 - 예측 정확도 : 78.947%(IQR)
+
 ![image](https://user-images.githubusercontent.com/121947465/212821483-159ec3ef-a323-4e08-8791-639f93c1ea72.png)
 
 - 예측 정확도 : 90.164%(로그변환)
+
 ![image](https://user-images.githubusercontent.com/121947465/212681740-8ecfcb6f-2968-49ae-b51f-c92ff21cbf2e.png)
 
 ##### 6-4. 의사결정트리
@@ -575,9 +581,11 @@ print(f"Execution time of model: {round((model_tree_time),5)} seconds")
 compute(Y_pred,Y_test)
 ```
 - 예측 정확도 : 73.684%(IQR)
+
 ![image](https://user-images.githubusercontent.com/121947465/212821578-92cbdbe2-517c-435d-b0e7-96de9d580276.png)
 
 - 예측 정확도 : 81.967%(로그변환)
+
 ![image](https://user-images.githubusercontent.com/121947465/212681991-ffadc878-43f2-461e-8595-e832ef03c0d3.png)
 
 ##### 6-5. 랜덤 포레스트 분류
@@ -600,9 +608,11 @@ print(f"Execution time of model: {round((model_RF_time),5)} seconds")
 compute(Y_pred,Y_test)
 ```
 - 예측 정확도 : 77.193%(IQR)
+
 ![image](https://user-images.githubusercontent.com/121947465/212821678-2c221b7d-c359-44af-8f0e-e0fec7f0a88b.png)
 
 - 예측 정확도 : 91.803%(로그변환)
+
 ![image](https://user-images.githubusercontent.com/121947465/212682468-52595c24-1927-4e5c-bc02-ed6a3347bb8e.png)
 
 ##### 6-6. AdaBoost
@@ -625,9 +635,11 @@ print(f"Execution time of model: {round((model_ADA_time),5)} seconds")
 compute(Y_pred,Y_test)
 ```
 - 예측 정확도 : 80.702%(IQR)
+
 ![image](https://user-images.githubusercontent.com/121947465/212821753-aed9f735-02e3-4c56-8e57-087e9756bf39.png)
 
 - 예측 정확도 : 93.443%(로그변환)
+
 ![image](https://user-images.githubusercontent.com/121947465/212682977-181567df-1403-461e-a7e8-dc2c1f866ec0.png)
 
 ##### 6-7. Gradient Boosting
@@ -650,9 +662,11 @@ print(f"Execution time of model: {round((model_GB_time),5)} seconds")
 compute(Y_pred,Y_test)
 ```
 - 예측 정확도 : 77.193%(IQR)
+
 ![image](https://user-images.githubusercontent.com/121947465/212821827-72b3c9f9-51e6-4895-ae4c-41dd8e53ef10.png)
 
 - 예측 정확도 : 91.803%
+
 ![image](https://user-images.githubusercontent.com/121947465/212683418-72556ff0-423d-42f9-a1d2-dee490b34b11.png)
 
 
@@ -679,9 +693,33 @@ print(f"Execution time of model: {round((model_xgb_time),5)} seconds")
 compute(Y_pred,Y_test)
 ```
 - 예측 정확도 : 84.211%(IQR)
+
 ![image](https://user-images.githubusercontent.com/121947465/212821922-5f557303-f52c-416f-a9b5-e3ae5ab03cc8.png)
 
 - 예측 정확도 : 95.082%(로그변환)
+
 ![image](https://user-images.githubusercontent.com/121947465/212683649-3c929def-3def-43aa-a0b5-34545ce852a2.png)
 
 
+##### 69. MLP
+``` python
+# 9. Build Model(MLP)
+from sklearn.neural_network import MLPClassifier
+
+start=time.time()
+
+model_MLP = MLPClassifier(random_state=48,hidden_layer_sizes=(150,100,50), max_iter=150,activation = 'relu',solver='adam')
+model_MLP.fit(X_train, Y_train)
+Y_pred=model_MLP.predict(X_test)
+
+end=time.time()
+
+model_MLP_time=end-start
+model_MLP_accuracy=round(accuracy_score(Y_test,Y_pred), 4)*100 # Accuracy
+
+print(f"Execution time of model: {round((model_MLP_time),5)} seconds")
+#Plot and compute metric
+compute(Y_pred,Y_test)
+```
+- 예측 정확도 : 78.947%(IQR)
+![image](https://user-images.githubusercontent.com/121947465/212822496-18a9de9d-d7b1-4fc5-8efb-1ff204ade7f0.png)
