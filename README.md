@@ -57,7 +57,7 @@ import matplotlib.pyplot as plt
 import plotly.graph_objs as go
 import plotly.express as px
 plt.style.use('fivethirtyeight')
-plt.style.use('seaborn-dark')
+plt.style.use('dark_background')3
 
 from google.colab import drive
 drive.mount('/content/Kaggle_Heart_Attack_data')
@@ -71,6 +71,7 @@ drive.mount('/content/Kaggle_Heart_Attack_data')
 # data download : https://www.kaggle.com/datasets/rashikrahmanpritom/heart-attack-analysis-prediction-dataset?resource=download
 
 data = pd.read_csv("/content/Kaggle_Heart_Attack_data/MyDrive/Kaggle_Heart_Attack_data/heart.csv")
+
 data.head()
 ```
 
@@ -281,17 +282,6 @@ print("oldpeak: {}".format(np.where(data['oldpeak']>4)))
 박스 도표를 통해 데이터의 전반적인 구성을 보고 이상치를 판별합니다.
 총 이상치는 19개입니다. (101번 데이터는 'trtbps', 'oldpeak' 두 곳에서 중첩되므로 한번만 카운트)
 
-###### * 참고 사이트 코드에 나와있는 이상치의 범위를 정확하게 수정하였습니다. 
-###### * 이로 인해 'trtbps'데이터의 이상치 개수가 13개에서 9개로 변경되었습니다.
-
-
-``` python
-print("trtbps: {}".format(np.where(data1['trtbps'] > 165)))
-print("chol: {}".format(np.where(data1['chol'] > 360)))
-print("thalachh: {}".format(np.where(data1['thalachh'] < 80)))
-print("oldpeak: {}".format(np.where(data1['oldpeak'] > 4)))
-```
-
 - 이상치 제거
 
 참고 사이트는 이상치 제거를 '로그 변환'을 통해 수행했습니다. 로그 변환으로 이상치를 제거할 경우 이상치가 완전히 제거되진 않습니다.
@@ -369,8 +359,7 @@ for k, v in continuous_data.items():
 ```
 ![image](https://user-images.githubusercontent.com/121947465/212544139-af4423ec-c166-42d7-96c1-fea89247e13e.png)
 
-
-이상치가 완전히는 제거되지 않는 모습입니다.
+전체 이상치가 로그변환을 통해 값들이 작아지면서 줄어들었습니다.
 
 ###### - 이상치를 탐색하고 수정하는 것은 연속형 데이터에만 해당합니다. 분류형 데이터는 one-hot 인코딩 방식을 사용하여 Accuracy를 비교해 보겠습니다.
 ``` python
@@ -723,3 +712,7 @@ compute(Y_pred,Y_test)
 ```
 - 예측 정확도 : 78.947%(IQR)
 ![image](https://user-images.githubusercontent.com/121947465/212822496-18a9de9d-d7b1-4fc5-8efb-1ff204ade7f0.png)
+
+
+###### - 모든 모델에서 로그변환을 사용한 모델이 IQR을 사용한 모델보다 정확도가 높은 것을 볼 수 있습니다.
+###### - 정확도를 조금 더 높이기 위해 GridSearch를 이용한 하이퍼파라미터를 변경하여 원래 모델과 비교해보겠습니다.
