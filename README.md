@@ -715,4 +715,16 @@ compute(Y_pred,Y_test)
 
 
 ###### - 모든 모델에서 로그변환을 사용한 모델이 IQR을 사용한 모델보다 정확도가 높은 것을 볼 수 있습니다.
-###### - 정확도를 조금 더 높이기 위해 GridSearch를 이용한 하이퍼파라미터를 변경하여 원래 모델과 비교해보겠습니다.
+###### - 정확도를 조금 더 높이기 위해 One-hot encoding과 GridSearch를 이용한 하이퍼파라미터의 조정을 통해 원래 모델과 비교해보겠습니다.
+
+
+- 기존 모델 정확도 비교
+![image](https://user-images.githubusercontent.com/121947465/213193674-54af0037-4808-430a-9518-68ca1d748898.png)
+
+- 로그변환 + 하이퍼파라미터를 조정한 모델들의 정확도
+-> Logistic regression, KNN, Decision Tree, Random Forest, Gradient Boosting 모델의 정확도가 향상되었습니다.
+![image](https://user-images.githubusercontent.com/121947465/213193718-d0813520-9e41-41fe-bc7b-385e96a6c943.png)
+
+- 로그변환 + One-hot encoding + 하이퍼파라미터를 조정한 모델들의 정확도
+-> Logistic regression, KNN, SVM의 정확도가 올랐고, MLP Classifier 모델의 정확도가 기존 소스의 최고 정확도인 95.082%를 넘어 96.72%로 향상되었습니다.
+![(정확도높음)로그변환+One_hot+하이퍼파라미터](https://user-images.githubusercontent.com/121947465/213193897-f2ec086a-b40a-46ae-817d-b0defdec68f3.png)
