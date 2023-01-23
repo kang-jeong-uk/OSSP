@@ -95,14 +95,6 @@ display(data.info())
 
 
 ### 4. 데이터 분석
-``` python
-plt.figure(figsize=(20,10))
-sns.pairplot(data, hue="output", corner = True)
-plt.legend("output")
-plt.tight_layout()
-plt.plot()
-```
-![image](https://user-images.githubusercontent.com/121947465/211485170-ac80423a-7ed7-4d04-999a-935627099a9d.png)
 
 - 성별 
 성별 데이터 '0', '1'이 각각 여성인지 남성인지 분별하기 위해 성별에 대한 분석을 우선 수행합니다.
@@ -123,8 +115,14 @@ print("Male Value Counts: \n{}".format((data[data ["sex"] == 0].reset_index())['
 ![image](https://user-images.githubusercontent.com/121947465/211483995-fa740f72-7931-4d61-9c60-e447b7eadbe9.png)
 
 총 303개의 데이터 중 207명(68.3%)은 1, 96명(31.7%)은 0입니다.
-
-![image](https://user-images.githubusercontent.com/121947465/211488720-fbe2c6e2-a2a4-44b0-9287-daad5c73cdc0.png)
+``` python
+fig, ax1 = plt.subplots(1,2, figsize=(20,6))
+plt.suptitle("Female(1)                                                                                                                     Male(0)")
+sns.countplot("output", data=X, palette='gist_heat',ax=ax1[0])
+sns.countplot("output", data=Y, palette='gist_heat',ax=ax1[1])
+fig.show()
+```
+![image](https://user-images.githubusercontent.com/121947465/213958347-402ded4b-6f35-4b4a-b7ec-084a80221f74.png)
 
 데이터가 '0'인 성별은 전체 데이터 비율이 데이터가 '1'인 성별보다 낮고, output의 비율은 1(심장질환을 경험할 확률이 높은 사람)이 더 높게 나타납니다.
 
@@ -141,7 +139,8 @@ sns.distplot(data["age"], color="magenta")
 plt.title("Total Age distribution")
 plt.show()
 ```
-![image](https://user-images.githubusercontent.com/121947465/212066058-2f9a85df-d694-4f6c-b4f4-87bc3c890996.png)
+![image](https://user-images.githubusercontent.com/121947465/213958429-cb9f063f-0cea-4a0e-986d-ded70bb9f18a.png)
+
 나이의 분포 그래프입니다. 50 ~ 60대가 대부분입니다.
 
 
@@ -276,11 +275,12 @@ print("thalachh: {}".format(np.where(data['thalachh']<84.75)))
 print("oldpeak: {}".format(np.where(data['oldpeak']>4)))
 ```
 
-![image](https://user-images.githubusercontent.com/121947465/212472826-1a82fc34-068d-490a-8aae-63d1e5932273.png)
-![image](https://user-images.githubusercontent.com/121947465/212473025-5849a46b-d50c-480b-aa99-fac8de4bb3b8.png)
+![image](https://user-images.githubusercontent.com/121947465/213958556-34371312-6175-4c4b-9f2c-dd0a19c944e7.png)
+
+![image](https://user-images.githubusercontent.com/121947465/213958604-98b23e36-9aa8-4f04-857e-5f8e628de7d6.png)
 
 박스 도표를 통해 데이터의 전반적인 구성을 보고 이상치를 판별합니다.
-총 이상치는 19개입니다. (101번 데이터는 'trtbps', 'oldpeak' 두 곳에서 중첩되므로 한번만 카운트)
+총 이상치는 24개입니다. (중복되는 101, 220, 223은 한번만 포함시켰.)
 
 - 이상치 제거
 
@@ -430,12 +430,6 @@ X_test = MM_scaler.fit_transform(X_test)
 ##### - 예측 결과와 정확도 시각화 함수
   
 ``` python
-from sklearn.metrics import precision_recall_fscore_support as score
-from sklearn.metrics import confusion_matrix,accuracy_score
-from sklearn.metrics import mean_squared_error,r2_score
-from sklearn.model_selection import GridSearchCV
-
-
 def compute(Y_pred,Y_test):
     # 각각의 output을 잘 예측했는지 시각화
     plt.figure(figsize=(12,6))
@@ -468,8 +462,6 @@ def compute(Y_pred,Y_test):
 ##### 6-1. 로지스틱 회귀
 ``` python
 # 1. Build Model(Logistic Regression)
-from sklearn.linear_model import LogisticRegression
-import time
 start = time.time()
 
 model_Log= LogisticRegression(random_state=10)
@@ -654,7 +646,7 @@ compute(Y_pred,Y_test)
 
 ![image](https://user-images.githubusercontent.com/121947465/212821827-72b3c9f9-51e6-4895-ae4c-41dd8e53ef10.png)
 
-- 예측 정확도 : 91.803%
+- 예측 정확도 : 91.803%()
 
 ![image](https://user-images.githubusercontent.com/121947465/212683418-72556ff0-423d-42f9-a1d2-dee490b34b11.png)
 
@@ -690,7 +682,7 @@ compute(Y_pred,Y_test)
 ![image](https://user-images.githubusercontent.com/121947465/212683649-3c929def-3def-43aa-a0b5-34545ce852a2.png)
 
 
-##### 69. MLP
+##### 6-9. MLP
 ``` python
 # 9. Build Model(MLP)
 from sklearn.neural_network import MLPClassifier
@@ -711,6 +703,7 @@ print(f"Execution time of model: {round((model_MLP_time),5)} seconds")
 compute(Y_pred,Y_test)
 ```
 - 예측 정확도 : 78.947%(IQR)
+
 ![image](https://user-images.githubusercontent.com/121947465/212822496-18a9de9d-d7b1-4fc5-8efb-1ff204ade7f0.png)
 
 
